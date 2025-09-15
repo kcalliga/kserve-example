@@ -54,27 +54,60 @@ spec:
         - name: SIM_THRESHOLD
           value: "0.05"
 
-## Invoke the Model
+---
+
+## 📡 Invoke the Model
+
+Once the `InferenceService` is running, get its route URL from `status.url` and send inference requests.
+
+### 🖥️ Simple JSON Request
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   -d '{"question":"How long does a worker honeybee live?"}' \
   https://<ingress>/v2/models/paragraph-chatbot/infer
 
-Exammple Response
+---
+## KServe V2 Request
+```json
+curl -X POST -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      {
+        "name": "question",
+        "datatype": "BYTES",
+        "shape": [1],
+        "data": ["What is the waggle dance used for?"]
+      }
+    ]
+  }' \
+  https://<ingress>/v2/models/paragraph-chatbot/infer
+
+---
+### Sample Response
 
 ```json
 {
-  "answer": "A typical worker bee lives for about six weeks.",
-  "context": "A typical worker bee lives for about six weeks during peak season and spends much of its life foraging.",
-  "similarity": 0.82
+  "answer": "It communicates the location of flowers.",
+  "context": "Bees communicate the location of flowers through the famous waggle dance, which encodes both direction and distance.",
+  "similarity": 0.74
 }
 
-| Variable            | Default                | Description                              |
-| ------------------- | ---------------------- | ---------------------------------------- |
-| `HF_MODEL_NAME`     | `google/flan-t5-small` | Primary model used for generation        |
-| `HF_FALLBACK_NAME`  | `t5-small`             | Fallback if primary model is unavailable |
-| `PARAGRAPH_PATH`    | `paragraph.txt`        | Knowledge paragraph file path            |
-| `HF_MAX_NEW_TOKENS` | `64`                   | Max tokens to generate                   |
-| `HF_NUM_BEAMS`      | `1`                    | Beam width (higher = better, slower)     |
-| `SIM_THRESHOLD`     | `0.05`                 | Minimum similarity for retrieval match   |
+---
+
+## Environment Variables
+
+You can adjust model behavior by editing the env section in the InferenceService manifest:
+
+## ⚙️ Environment Variables
+
+| Variable             | Default                   | Description                                                   |
+|-----------------------|----------------------------|---------------------------------------------------------------|
+| `HF_MODEL_NAME`       | `google/flan-t5-small`     | Primary model used for generation                             |
+| `HF_FALLBACK_NAME`    | `t5-small`                 | Fallback model if the primary is unavailable                   |
+| `PARAGRAPH_PATH`      | `paragraph.txt`            | Path to the local paragraph file                              |
+| `HF_MAX_NEW_TOKENS`   | `64`                       | Maximum number of tokens to generate in the answer             |
+| `HF_NUM_BEAMS`        | `1`                        | Beam width (higher = better quality, lower = faster)           |
+| `SIM_THRESHOLD`       | `0.05`                     | Minimum similarity score to accept a retrieved context         |
+
+
