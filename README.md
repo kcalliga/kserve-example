@@ -53,6 +53,7 @@ spec:
           value: "1"
         - name: SIM_THRESHOLD
           value: "0.05"
+```yaml
 
 ---
 
@@ -66,6 +67,7 @@ Once the `InferenceService` is running, get its route URL from `status.url` and 
 curl -X POST -H "Content-Type: application/json" \
   -d '{"question":"How long does a worker honeybee live?"}' \
   https://<ingress>/v2/models/paragraph-chatbot/infer
+```bash
 
 ---
 ## KServe V2 Request
@@ -82,7 +84,7 @@ curl -X POST -H "Content-Type: application/json" \
     ]
   }' \
   https://<ingress>/v2/models/paragraph-chatbot/infer
-
+```json
 ---
 ### Sample Response
 
@@ -92,7 +94,7 @@ curl -X POST -H "Content-Type: application/json" \
   "context": "Bees communicate the location of flowers through the famous waggle dance, which encodes both direction and distance.",
   "similarity": 0.74
 }
-
+```json
 ---
 
 ## Environment Variables
